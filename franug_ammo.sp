@@ -32,9 +32,11 @@ public Plugin:myinfo =
 };
 
 new Handle:trie_armas;
+new Handle:g_cvEnable;
 
 public OnPluginStart()
 {
+	g_cvEnable = CreateConVar("sm_ammo_refill_enabled", "1", "Enable / Disable Ammo Refill");
 	
 	trie_armas = CreateTrie();
 	
@@ -45,10 +47,15 @@ public OnPluginStart()
 		{
 			OnClientPutInServer(i);
 		}
+		
+	AutoExecConfig();
 }
 
 public ClientWeaponReload(Handle:event, const String:name[], bool:dontBroadcast)
 {
+    if (!GetConVarBool(g_cvEnable))
+        return;
+		
     new client = GetClientOfUserId(GetEventInt(event,  "userid"));
     Darm(client);
 }
